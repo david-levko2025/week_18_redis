@@ -1,26 +1,11 @@
-import json
-from confluent_kafka import Producer
+from priority_logic import Redis,open_file,process_alert
 
-def create_producer():
-    PRODUCER_CONFIG = {
-        "bootstrap.servers": "localhost:9092"
-    }
-    return Producer(PRODUCER_CONFIG)  # type: ignore
-
-def delivery_report(err, msg):
-    if err:
-        print(f" Delivery failed: {err}")
-    else:
-        print(f" Delivered {msg.value().decode("utf-8")}")
+def main():
+    redis_cnx = Redis()
+    alerts_list = open_file()
+    for alert in alerts_list:
+        process_alert(alert, redis_cnx)
 
 
-def send_data(data):
-    value = json.dumps(data).encode("utf-8")
-    producer = create_producer()
-    producer.produce(
-        topic="",
-        value=value,
-        callback=delivery_report  # type: ignore
-                    )
-
-    return producer.flush()
+if __name__ == "__main__":
+    main()

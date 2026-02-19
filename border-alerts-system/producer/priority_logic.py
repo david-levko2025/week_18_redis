@@ -1,5 +1,8 @@
 import json
+
 from schema import BorderAlerts
+from redis_connection import Redis
+
 
 def open_file():
     with open("data/border_alerts.json",'r') as file:
@@ -30,3 +33,9 @@ def priority_classification():
             
         else:
             border_alerts_file['priority'] = 'NORMAL'
+    return 
+
+def process_alert(alert, redis: Redis):
+    priority = priority_classification(alert)  # type: ignore
+    alert['priority'] = priority
+    redis.push_alarm(alert_data=alert, queue={priority})
