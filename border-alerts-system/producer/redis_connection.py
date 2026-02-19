@@ -1,5 +1,7 @@
 import redis
 import json
+
+
 class Redis():
     def get_redis_config(self):
         return redis.Redis(host='localhost', port=6379, decode_responses=True,db=0)
