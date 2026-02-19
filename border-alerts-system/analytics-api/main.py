@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from routes import route as order_route
 
 app = FastAPI(debug=True)
+
 app.include_router(order_route)
 
 
